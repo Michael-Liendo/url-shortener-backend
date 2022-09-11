@@ -1,0 +1,30 @@
+{
+  "name": "url-shortener-backend",
+  "version": "0.0.1",
+  "description": "The backend for url-shortener",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Michael-Liendo/url-shortener-backend.git"
+  },
+  "keywords": [
+    "fastify"
+  ],
+  "author": "Michael Liendo <contact@michaelliendo.com> (https://michaelliendo.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Michael-Liendo/url-shortener-backend/issues"
+  },
+  "homepage": "https://github.com/Michael-Liendo/url-shortener-backend#readme",
+  "dependencies": {
+    "fastify": "^4.5.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.19"
+  }
+}
