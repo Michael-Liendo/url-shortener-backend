@@ -6,7 +6,9 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "dev": "nodemon src/index.js",
+    "format": "prettier --ignore-path .gitignore --write .  &&  eslint --ignore-path .gitignore --fix .",
+    "lint": "prettier --ignore-path .gitignore --check . && eslint --ignore-path .gitignore ."
   },
   "repository": {
     "type": "git",
@@ -25,6 +27,8 @@
     "fastify": "^4.5.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.19"
+    "eslint": "^8.23.0",
+    "nodemon": "^2.0.19",
+    "prettier": "2.7.1"
   }
 }
