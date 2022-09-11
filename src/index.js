@@ -1,3 +1,5 @@
+import * as dotenv from 'dotenv';
+dotenv.config();
 import Fastify from 'fastify';
 import mongoose from 'mongoose';
 
@@ -6,9 +8,7 @@ const fastify = Fastify({
 });
 
 mongoose
-  .connect(
-    'mongodb://url-shortener:password@localhost:27017/url-shortener?authSource=admin',
-  )
+  .connect(process.env.MONGO_URI)
   .then(() => console.log('Connected to database'))
   .catch((e) => {
     throw e;
