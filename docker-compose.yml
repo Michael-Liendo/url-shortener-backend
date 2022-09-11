@@ -6,3 +6,7 @@ services:
       - '27017:27017'
     env_file:
       - .env
+    volumes:
+      - url-shortener-data:/data/db
+volumes:
+  url-shortener-data:
