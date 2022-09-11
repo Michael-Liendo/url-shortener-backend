@@ -8,7 +8,8 @@
     "start": "node src/index.js",
     "dev": "nodemon src/index.js",
     "format": "prettier --ignore-path .gitignore --write .  &&  eslint --ignore-path .gitignore --fix .",
-    "lint": "prettier --ignore-path .gitignore --check . && eslint --ignore-path .gitignore ."
+    "lint": "prettier --ignore-path .gitignore --check . && eslint --ignore-path .gitignore .",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -27,7 +28,10 @@
     "fastify": "^4.5.3"
   },
   "devDependencies": {
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "eslint": "^8.23.0",
+    "husky": "^8.0.0",
     "nodemon": "^2.0.19",
     "prettier": "2.7.1"
   }
