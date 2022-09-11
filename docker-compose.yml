@@ -1,0 +1,8 @@
+version: '3.9'
+services:
+  database:
+    image: mongo
+    ports:
+      - '27017:27017'
+    env_file:
+      - .env

@@ -25,7 +25,8 @@
   },
   "homepage": "https://github.com/Michael-Liendo/url-shortener-backend#readme",
   "dependencies": {
-    "fastify": "^4.5.3"
+    "fastify": "^4.5.3",
+    "mongoose": "^6.6.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.1.2",
