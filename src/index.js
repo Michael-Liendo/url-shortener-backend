@@ -87,6 +87,35 @@ fastify.post('/api/create-shorturl', async (request, reply) => {
   }
 });
 
+fastify.post('/api/view-shorturl', async (request, reply) => {
+  let original_url = request.body.original_url;
+  let short_url = request.body.short_url;
+
+  let url = await ShortUrlModel.findOne({ original_url });
+  let short = await ShortUrlModel.findOne({ short_url });
+
+  if (url) {
+    return reply.code(202).send({
+      status: 'ok',
+      message: 'Yes its original url exists',
+      original_url: url.original_url,
+      short_url: url.short_url,
+    });
+  } else if (short) {
+    return reply.code(202).send({
+      status: 'ok',
+      message: 'Yes your url exists',
+      original_url: short.original_url,
+      short_url: short.short_url,
+    });
+  } else {
+    return reply.code(404).send({
+      status: 'error',
+      message: 'No found url',
+    });
+  }
+});
+
 fastify.get('/', function (request, reply) {
   reply.send({ hello: 'world' });
 });
