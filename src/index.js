@@ -33,7 +33,7 @@ const isValidUrl = (urlString) => {
   return !!urlPattern.test(urlString);
 };
 
-fastify.post('/api/shorturl', async (request, reply) => {
+fastify.post('/api/create-shorturl', async (request, reply) => {
   let original_url = request.body.original_url;
   let short_url = request.body.short_url;
 
