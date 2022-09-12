@@ -38,7 +38,7 @@ fastify.post('/api/create-shorturl', async (request, reply) => {
   let short_url = request.body.short_url;
 
   if (!original_url && !short_url) {
-    return reply.code(500).send({
+    return reply.code(400).send({
       status: 'error',
       message:
         'Put the url where it will be redirected, and the short text for the shortened link',
@@ -46,7 +46,7 @@ fastify.post('/api/create-shorturl', async (request, reply) => {
   }
 
   if (!isValidUrl(original_url)) {
-    return reply.code(500).send({
+    return reply.code(400).send({
       status: 'error',
       message: 'Put a valid url',
     });
@@ -56,14 +56,14 @@ fastify.post('/api/create-shorturl', async (request, reply) => {
   let short = await ShortUrlModel.findOne({ short_url });
 
   if (url) {
-    return reply.code(500).send({
+    return reply.code(400).send({
       status: 'error',
       message: 'The link already exists',
       original_url: url.original_url,
       short_url: url.short_url,
     });
   } else if (short) {
-    return reply.code(500).send({
+    return reply.code(400).send({
       status: 'error',
       message: 'The original url already exists',
       original_url: short.original_url,
