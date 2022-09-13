@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/Michael-Liendo/url-shortener-backend#readme",
   "dependencies": {
+    "@fastify/cors": "^8.1.0",
     "dotenv": "^16.0.2",
     "fastify": "^4.5.3",
     "mongoose": "^6.6.0"

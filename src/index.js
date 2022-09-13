@@ -1,9 +1,14 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 import Fastify from 'fastify';
+import cors from '@fastify/cors';
 import mongoose from 'mongoose';
 
 const fastify = Fastify();
+
+await fastify.register(cors, {
+  origin: '*',
+});
 
 mongoose
   .connect(process.env.MONGO_URI)
