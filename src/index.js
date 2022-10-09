@@ -54,8 +54,8 @@ fastify.post('/new', async (request, reply) => {
   if (short) {
     return reply.code(400).send({
       status: 'error',
-      message: 'The original url already exists',
-      original_url: short.url,
+      message: 'The hash already exists, try again',
+      url: short.url,
       hash: short.hash,
     });
   } else {
