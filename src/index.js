@@ -4,6 +4,8 @@ import Fastify from 'fastify';
 import cors from '@fastify/cors';
 import mongoose from 'mongoose';
 
+import createHash from './utils/createHash.js';
+import validateUrl from './utils/validateUrl.js';
 const fastify = Fastify();
 
 await fastify.register(cors, {
@@ -21,63 +23,45 @@ const ShortUrlModel = mongoose.model(
   'ShortUrl',
   new mongoose.Schema({
     original_url: String,
-    short_url: String,
+    hash: String,
   }),
 );
 
-const isValidUrl = (urlString) => {
-  var urlPattern = new RegExp(
-    '^(https?:\\/\\/)?' + // validate protocol
-      '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|' + // validate domain name
-      '((\\d{1,3}\\.){3}\\d{1,3}))' + // validate OR ip (v4) address
-      '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // validate port and path
-      '(\\?[;&a-z\\d%_.~+=-]*)?' + // validate query string
-      '(\\#[-a-z\\d_]*)?$',
-    'i',
-  ); // validate fragment locator
-  return !!urlPattern.test(urlString);
-};
+fastify.post('/new', async (request, reply) => {
+  let url = request.body.url;
+  let hash = request.body.hash;
 
-fastify.post('/api/create-shorturl', async (request, reply) => {
-  let original_url = request.body.original_url;
-  let short_url = request.body.short_url;
-
-  if (!original_url && !short_url) {
+  if (!url) {
     return reply.code(400).send({
       status: 'error',
-      message:
-        'Put the url where it will be redirected, and the short text for the shortened link',
+      message: 'Put the url where it will be redirected',
     });
   }
 
-  if (!isValidUrl(original_url)) {
+  if (!hash) {
+    hash = createHash(16);
+  }
+
+  if (!validateUrl(url)) {
     return reply.code(400).send({
       status: 'error',
       message: 'Put a valid url',
     });
   }
 
-  let url = await ShortUrlModel.findOne({ original_url });
-  let short = await ShortUrlModel.findOne({ short_url });
+  let short = await ShortUrlModel.findOne({ hash });
 
-  if (url) {
-    return reply.code(400).send({
-      status: 'error',
-      message: 'The link already exists',
-      original_url: url.original_url,
-      short_url: url.short_url,
-    });
-  } else if (short) {
+  if (short) {
     return reply.code(400).send({
       status: 'error',
       message: 'The original url already exists',
-      original_url: short.original_url,
-      short_url: short.short_url,
+      original_url: short.url,
+      hash: short.hash,
     });
   } else {
     const newShortener = new ShortUrlModel({
-      original_url,
-      short_url,
+      url,
+      hash,
     });
 
     let saveUrl = await newShortener.save();
@@ -92,24 +76,24 @@ fastify.post('/api/create-shorturl', async (request, reply) => {
 
 fastify.post('/api/view-shorturl', async (request, reply) => {
   let original_url = request.body.original_url;
-  let short_url = request.body.short_url;
+  let hash = request.body.hash;
 
   let url = await ShortUrlModel.findOne({ original_url });
-  let short = await ShortUrlModel.findOne({ short_url });
+  let short = await ShortUrlModel.findOne({ hash });
 
   if (url) {
     return reply.code().send({
       status: 'ok',
       message: 'Yes its original url exists',
       original_url: url.original_url,
-      short_url: url.short_url,
+      hash: url.hash,
     });
   } else if (short) {
     return reply.code(202).send({
       status: 'ok',
       message: 'Yes your url exists',
       original_url: short.original_url,
-      short_url: short.short_url,
+      hash: short.hash,
     });
   } else {
     return reply.code(404).send({
