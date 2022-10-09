@@ -24,14 +24,16 @@ const ShortUrlModel = mongoose.model(
   new mongoose.Schema({
     original_url: String,
     hash: String,
+    expires_at: Date,
   }),
 );
 
 fastify.post('/new', async (request, reply) => {
-  let url = request.body.url;
+  let original_url = request.body.url;
   let hash = request.body.hash;
+  const expires_at = new Date().setDate(new Date().getDate() + 10);
 
-  if (!url) {
+  if (!original_url) {
     return reply.code(400).send({
       status: 'error',
       message: 'Put the url where it will be redirected',
@@ -42,10 +44,10 @@ fastify.post('/new', async (request, reply) => {
     hash = createHash(16);
   }
 
-  if (!validateUrl(url)) {
+  if (!validateUrl(original_url)) {
     return reply.code(400).send({
       status: 'error',
-      message: 'Put a valid url',
+      message: `Provided URL is not valid: ${original_url}`,
     });
   }
 
@@ -55,13 +57,14 @@ fastify.post('/new', async (request, reply) => {
     return reply.code(400).send({
       status: 'error',
       message: 'The hash already exists, try again',
-      url: short.url,
+      url: short.original_url,
       hash: short.hash,
     });
   } else {
     const newShortener = new ShortUrlModel({
-      url,
+      original_url,
       hash,
+      expires_at: new Date(expires_at),
     });
 
     let saveUrl = await newShortener.save();
@@ -70,6 +73,9 @@ fastify.post('/new', async (request, reply) => {
     reply.send({
       status: 'ok',
       message: 'The url was created',
+      original_url,
+      hash,
+      expires_at: new Date(expires_at),
     });
   }
 });
