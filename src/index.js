@@ -31,7 +31,9 @@ const ShortUrlModel = mongoose.model(
 fastify.post('/new', async (request, reply) => {
   let original_url = request.body.url;
   let hash = request.body.hash;
-  const expires_at = new Date().setDate(new Date().getDate() + 10);
+  const today = new Date();
+  const expires_at = new Date();
+  expires_at.setDate(today.getDate() + 10);
 
   if (!original_url) {
     return reply.code(400).send({
@@ -64,7 +66,7 @@ fastify.post('/new', async (request, reply) => {
     const newShortener = new ShortUrlModel({
       original_url,
       hash,
-      expires_at: new Date(expires_at),
+      expires_at,
     });
 
     let saveUrl = await newShortener.save();
@@ -75,7 +77,7 @@ fastify.post('/new', async (request, reply) => {
       message: 'The url was created',
       original_url,
       hash,
-      expires_at: new Date(expires_at),
+      expires_at,
     });
   }
 });
