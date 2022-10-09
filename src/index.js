@@ -9,7 +9,7 @@ import validateUrl from './utils/validateUrl.js';
 const fastify = Fastify();
 
 await fastify.register(cors, {
-  origin: '*',
+  origin: process.env.CORS_ORIGIN || '*',
 });
 
 mongoose
