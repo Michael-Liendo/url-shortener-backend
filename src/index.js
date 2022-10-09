@@ -21,11 +21,14 @@ mongoose
 
 const ShortUrlModel = mongoose.model(
   'ShortUrl',
-  new mongoose.Schema({
-    original_url: String,
-    hash: String,
-    expires_at: Date,
-  }),
+  new mongoose.Schema(
+    {
+      original_url: String,
+      hash: String,
+      expires_at: Date,
+    },
+    { timestamps: true },
+  ).index({ expiresAt: 1 }, { expireAfterSeconds: 864000000 }),
 );
 
 fastify.post('/new', async (request, reply) => {
@@ -84,16 +87,12 @@ fastify.post('/new', async (request, reply) => {
 
 fastify.get('/:hash', async (request, reply) => {
   let hash = request.params.hash;
-
   let shortener = await ShortUrlModel.findOne({ hash });
 
   if (shortener) {
     reply.redirect(shortener.original_url);
   } else {
-    return reply.code(404).send({
-      status: 'error',
-      message: 'No found url',
-    });
+    reply.redirect(process.env.CLIENT_URL);
   }
 });
 
