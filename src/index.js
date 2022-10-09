@@ -42,15 +42,15 @@ fastify.post('/new', async (request, reply) => {
     });
   }
 
-  if (!hash) {
-    hash = createHash(16);
-  }
-
   if (!validateUrl(original_url)) {
     return reply.code(400).send({
       status: 'error',
       message: `Provided URL is not valid: ${original_url}`,
     });
+  }
+
+  if (!hash) {
+    hash = createHash(16);
   }
 
   let short = await ShortUrlModel.findOne({ hash });
@@ -82,27 +82,13 @@ fastify.post('/new', async (request, reply) => {
   }
 });
 
-fastify.post('/api/view-shorturl', async (request, reply) => {
-  let original_url = request.body.original_url;
-  let hash = request.body.hash;
+fastify.get('/:hash', async (request, reply) => {
+  let hash = request.params.hash;
 
-  let url = await ShortUrlModel.findOne({ original_url });
-  let short = await ShortUrlModel.findOne({ hash });
+  let shortener = await ShortUrlModel.findOne({ hash });
 
-  if (url) {
-    return reply.code().send({
-      status: 'ok',
-      message: 'Yes its original url exists',
-      original_url: url.original_url,
-      hash: url.hash,
-    });
-  } else if (short) {
-    return reply.code(202).send({
-      status: 'ok',
-      message: 'Yes your url exists',
-      original_url: short.original_url,
-      hash: short.hash,
-    });
+  if (shortener) {
+    reply.redirect(shortener.original_url);
   } else {
     return reply.code(404).send({
       status: 'error',
