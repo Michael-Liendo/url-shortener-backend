@@ -90,9 +90,12 @@ fastify.get('/:hash', async (request, reply) => {
   let shortener = await ShortUrlModel.findOne({ hash });
 
   if (shortener) {
-    reply.redirect(shortener.original_url);
+    reply.status(200).send(shortener);
   } else {
-    reply.redirect(process.env.CLIENT_URL);
+    reply.status(404).send({
+      status: 'error',
+      message: 'Url no found',
+    });
   }
 });
 
